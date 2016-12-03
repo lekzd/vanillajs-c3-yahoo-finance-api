@@ -139,6 +139,10 @@ gulp.task('build:js', function () {
         .pipe(fs.createWriteStream(dirs.dist + "/app.js"))
 });
 
+gulp.task('watch', function (done) {
+    gulp.watch(dirs.src + '/js/**/*.js', ['build:js']);
+    gulp.watch(dirs.src + '/index.html', ['copy:index.html']);
+});
 
 // ---------------------------------------------------------------------
 // | Main tasks                                                        |
