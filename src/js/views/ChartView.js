@@ -21,13 +21,12 @@ export default class ChartView {
         let results = data.query.results.quote;
 
         results.forEach((item) => {
-           date.push(item.Date);
-           close.push(item.Close);
-           high.push(item.High);
-           low.push(item.Low);
-           open.push(item.Open);
+            date.push(item.Date);
+            close.push(parseFloat(item.Close));
+            high.push(parseFloat(item.High));
+            low.push(parseFloat(item.Low));
+            open.push(parseFloat(item.Open));
         });
-
 
         c3.generate({
             bindto: `#${this.uid}`,
@@ -47,6 +46,15 @@ export default class ChartView {
                     tick: {
                         format: '%Y-%m-%d'
                     }
+                }
+            },
+            zoom: {
+                enabled: true
+            },
+            subchart: {
+                show: true,
+                size: {
+                    height: 20
                 }
             }
         });

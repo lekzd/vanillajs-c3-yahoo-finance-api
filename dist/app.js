@@ -178,10 +178,10 @@ var ChartView = function () {
 
             results.forEach(function (item) {
                 date.push(item.Date);
-                close.push(item.Close);
-                high.push(item.High);
-                low.push(item.Low);
-                open.push(item.Open);
+                close.push(parseFloat(item.Close));
+                high.push(parseFloat(item.High));
+                low.push(parseFloat(item.Low));
+                open.push(parseFloat(item.Open));
             });
 
             c3.generate({
@@ -196,6 +196,15 @@ var ChartView = function () {
                         tick: {
                             format: '%Y-%m-%d'
                         }
+                    }
+                },
+                zoom: {
+                    enabled: true
+                },
+                subchart: {
+                    show: true,
+                    size: {
+                        height: 20
                     }
                 }
             });
