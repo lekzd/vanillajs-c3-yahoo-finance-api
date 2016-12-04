@@ -9,6 +9,10 @@ var _FormView = require('./views/FormView.js');
 
 var _FormView2 = _interopRequireDefault(_FormView);
 
+var _TabsView = require('./views/TabsView.js');
+
+var _TabsView2 = _interopRequireDefault(_TabsView);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var query = new _YQLQueryService2.default();
@@ -19,8 +23,13 @@ var endTime = new Date('2016-12-03').getTime();
 query.get('YHOO', startTime, endTime);
 
 var form = new _FormView2.default(document.querySelector('#form'));
+var tabs = new _TabsView2.default(document.querySelector('#tabs'));
 
-},{"./services/YQLQueryService.js":3,"./views/FormView.js":4}],2:[function(require,module,exports){
+form.onSubmit = function (data) {
+  console.log(data);
+};
+
+},{"./services/YQLQueryService.js":3,"./views/FormView.js":4,"./views/TabsView.js":5}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -149,16 +158,22 @@ var FormView = function () {
     }
 
     _createClass(FormView, [{
+        key: 'onSubmit',
+        value: function onSubmit() {}
+    }, {
         key: '_onSubmit',
         value: function _onSubmit(event) {
             event.preventDefault();
-
-            console.log('form sent');
+            var data = Object.create(null);
+            new FormData(this.view).forEach(function (value, key) {
+                data[key] = value;
+            });
+            this.onSubmit(data);
         }
     }, {
         key: '_bindEvents',
         value: function _bindEvents() {
-            this.view.addEventListener('submit', this._onSubmit);
+            this.view.addEventListener('submit', this._onSubmit.bind(this));
         }
     }]);
 
@@ -166,5 +181,75 @@ var FormView = function () {
 }();
 
 exports.default = FormView;
+
+},{}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TabsView = function () {
+    function TabsView(view) {
+        _classCallCheck(this, TabsView);
+
+        this.view = view;
+        this._all = [];
+        this._rendered = new WeakSet();
+
+        this._tabsHeader = this._element({ className: 'tabs-header' });
+        this.view.appendChild(this._tabsHeader);
+
+        this._tabsContent = this._element({ className: 'tabs-content' });
+        this.view.appendChild(this._tabsContent);
+    }
+
+    _createClass(TabsView, [{
+        key: '_element',
+        value: function _element(attributes) {
+            var element = document.createElement('div');
+            Object.assign(element, attributes);
+            return element;
+        }
+    }, {
+        key: '_render',
+        value: function _render() {
+            var _this = this;
+
+            this._all.forEach(function (item) {
+                if (_this._rendered.has(item)) {
+                    return true;
+                }
+                var tabTitle = _this._element({
+                    className: 'tabs-header-item',
+                    innerText: item.title
+                });
+                _this._tabsHeader.appendChild(tabTitle);
+
+                var tabContent = _this._element({
+                    className: 'tabs-content-item',
+                    innerHTML: item.content
+                });
+                _this._tabsHeader.appendChild(tabContent);
+
+                _this._rendered.add(item);
+            });
+        }
+    }, {
+        key: 'add',
+        value: function add(title, content) {
+            this._all.push({ title: title, content: content });
+            this._render();
+        }
+    }]);
+
+    return TabsView;
+}();
+
+exports.default = TabsView;
 
 },{}]},{},[1]);

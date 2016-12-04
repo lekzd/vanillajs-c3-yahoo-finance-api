@@ -5,13 +5,18 @@ export default class FormView {
         this._bindEvents();
     }
 
+    onSubmit () {}
+
     _onSubmit (event) {
         event.preventDefault();
-
-        console.log('form sent');
+        let data = Object.create(null);
+        (new FormData(this.view)).forEach((value, key) => {
+            data[key] = value;
+        });
+        this.onSubmit(data);
     }
 
     _bindEvents() {
-        this.view.addEventListener('submit', this._onSubmit)
+        this.view.addEventListener('submit', this._onSubmit.bind(this))
     }
 }

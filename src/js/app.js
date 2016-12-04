@@ -1,5 +1,6 @@
 import YQLQueryService from './services/YQLQueryService.js';
 import FormView from './views/FormView.js';
+import TabsView from './views/TabsView.js';
 
 const query = new YQLQueryService();
 
@@ -10,4 +11,8 @@ query.get('YHOO', startTime, endTime);
 
 
 const form = new FormView(document.querySelector('#form'));
+const tabs = new TabsView(document.querySelector('#tabs'));
 
+form.onSubmit = (data) => {
+  console.log(data);
+};
