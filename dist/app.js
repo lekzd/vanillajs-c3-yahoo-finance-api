@@ -169,11 +169,26 @@ var ChartView = function () {
     }, {
         key: '_generateChart',
         value: function _generateChart(data) {
+            var date = [],
+                close = [],
+                high = [],
+                low = [],
+                open = [];
+            var results = data.query.results.quote;
+
+            results.forEach(function (item) {
+                date.push(item.Date);
+                close.push(item.Close);
+                high.push(item.High);
+                low.push(item.Low);
+                open.push(item.Open);
+            });
+
             c3.generate({
                 bindto: '#' + this.uid,
                 data: {
                     x: 'x',
-                    columns: [['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'], ['data1', 30, 200, 100, 400, 150, 250], ['data2', 130, 340, 200, 500, 250, 350]]
+                    columns: [['x'].concat(date), ['close'].concat(close), ['high'].concat(high), ['low'].concat(low), ['open'].concat(open)]
                 },
                 axis: {
                     x: {
