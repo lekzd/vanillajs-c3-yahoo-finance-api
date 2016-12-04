@@ -19,6 +19,7 @@ var query = new _YQLQueryService2.default();
 
 var form = new _FormView2.default(document.querySelector('#form'));
 var tabs = new _TabsView2.default(document.querySelector('#tabs'));
+var spinner = document.querySelector('#spinner');
 
 form.onSubmit = function (_ref) {
     var code = _ref.code,
@@ -27,10 +28,12 @@ form.onSubmit = function (_ref) {
 
     var startTime = new Date(from).getTime();
     var endTime = new Date(to).getTime();
+    spinner.classList.remove('hidden');
 
     query.get(code, startTime, endTime).then(function (data) {
         var title = code + ' (' + from + ' - ' + to + ')';
         tabs.add(title, data);
+        spinner.classList.add('hidden');
     });
 };
 
