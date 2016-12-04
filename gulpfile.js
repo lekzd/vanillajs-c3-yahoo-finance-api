@@ -142,6 +142,7 @@ gulp.task('build:js', function () {
 gulp.task('watch', function (done) {
     gulp.watch(dirs.src + '/js/**/*.js', ['build:js']);
     gulp.watch(dirs.src + '/index.html', ['copy:index.html']);
+    gulp.watch(dirs.src + '/css/main.css', ['copy:main.css']);
 });
 
 // ---------------------------------------------------------------------

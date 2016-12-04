@@ -29,7 +29,8 @@ form.onSubmit = function (_ref) {
     var endTime = new Date(to).getTime();
 
     query.get(code, startTime, endTime).then(function (data) {
-        tabs.add(code, data);
+        var title = code + ' (' + from + ' - ' + to + ')';
+        tabs.add(title, data);
     });
 };
 
@@ -320,16 +321,39 @@ var TabsView = function () {
                     className: 'tabs-header-item',
                     innerText: item.title
                 });
+                tabTitle.addEventListener('click', _this._setActive.bind(_this, item));
                 _this._tabsHeader.appendChild(tabTitle);
 
                 var tabContent = _this._element({
                     className: 'tabs-content-item'
                 });
                 tabContent.appendChild(item.chart);
-                _this._tabsHeader.appendChild(tabContent);
+                _this._tabsContent.appendChild(tabContent);
 
                 _this._rendered.add(item);
             });
+        }
+    }, {
+        key: '_updateSelectedIndex',
+        value: function _updateSelectedIndex(selector, activeIndex) {
+            var elements = Array.from(this.view.querySelectorAll(selector));
+            elements.forEach(function (item, index) {
+                if (index === activeIndex) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+    }, {
+        key: '_setActive',
+        value: function _setActive(item) {
+            var activeIndex = this._all.indexOf(item);
+            if (activeIndex === -1) {
+                return false;
+            }
+            this._updateSelectedIndex('.tabs-header-item', activeIndex);
+            this._updateSelectedIndex('.tabs-content-item', activeIndex);
         }
     }, {
         key: 'add',
@@ -338,8 +362,10 @@ var TabsView = function () {
             var chart = document.createElement('div');
             new _ChartView2.default(chart, data);
 
-            this._all.push({ title: title, chart: chart });
+            var item = { title: title, chart: chart };
+            this._all.push(item);
             this._render();
+            this._setActive(item);
         }
     }]);
 

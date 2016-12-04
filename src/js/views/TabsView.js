@@ -28,16 +28,37 @@ export default class TabsView {
                 className: 'tabs-header-item',
                 innerText: item.title
             });
+            tabTitle.addEventListener('click', this._setActive.bind(this, item));
             this._tabsHeader.appendChild(tabTitle);
 
             let tabContent = this._element({
                 className: 'tabs-content-item'
             });
             tabContent.appendChild(item.chart);
-            this._tabsHeader.appendChild(tabContent);
+            this._tabsContent.appendChild(tabContent);
 
             this._rendered.add(item);
         })
+    }
+
+    _updateSelectedIndex (selector, activeIndex) {
+        let elements = Array.from(this.view.querySelectorAll(selector));
+        elements.forEach((item, index) => {
+            if (index === activeIndex) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    _setActive (item) {
+        let activeIndex = this._all.indexOf(item);
+        if (activeIndex === -1) {
+            return false;
+        }
+        this._updateSelectedIndex('.tabs-header-item', activeIndex);
+        this._updateSelectedIndex('.tabs-content-item', activeIndex);
     }
 
     add (title, data) {
@@ -45,7 +66,9 @@ export default class TabsView {
         let chart = document.createElement('div');
         new ChartView(chart, data);
 
-        this._all.push({title, chart});
+        let item = {title, chart};
+        this._all.push(item);
         this._render();
+        this._setActive(item);
     }
 }

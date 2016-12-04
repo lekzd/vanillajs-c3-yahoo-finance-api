@@ -95,6 +95,64 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+body {
+    background: #eee;
+}
+
+body * {
+    box-sizing: border-box;
+}
+
+.form {
+    padding: 10px;
+}
+
+input, select {
+    height: 28px;
+    margin: 0;
+    padding: 3px 6px;
+    border: 1px solid #aaa;
+}
+
+.tabs-header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.tabs-header-item {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-top-width: 3px;
+    border-bottom-width: 0;
+    cursor: pointer;
+}
+.tabs-header-item:hover {
+    background: #fafafa;
+}
+.tabs-header-item.active {
+    border-top-color: orange;
+    background: #fff;
+}
+
+.tabs-content {
+    background: #fff;
+}
+
+.tabs-content .tabs-content-item {
+    display: none;
+    border: 1px solid #ddd;
+    padding: 8px 0;
+}
+
+.tabs-content .tabs-content-item.active {
+    display: block;
+}
+
+
 
 
 

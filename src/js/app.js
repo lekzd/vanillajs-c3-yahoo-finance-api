@@ -12,6 +12,7 @@ form.onSubmit = ({code, from, to}) => {
     let endTime = (new Date(to)).getTime();
 
     query.get(code, startTime, endTime).then((data) => {
-        tabs.add(code, data);
+        let title = `${code} (${from} - ${to})`;
+        tabs.add(title, data);
     });
 };
