@@ -5,6 +5,7 @@ export default class TabsView {
         this.view = view;
         this._all = [];
         this._rendered = new WeakSet();
+        this._activeIndex = 0;
 
         this._tabsHeader = this._element({className: 'tabs-header'});
         this.view.appendChild(this._tabsHeader);
@@ -28,6 +29,12 @@ export default class TabsView {
                 className: 'tabs-header-item',
                 innerText: item.title
             });
+            let tabTitleClose = this._element({
+                className: 'tabs-header-item-close',
+                innerText: 'x'
+            });
+            tabTitle.appendChild(tabTitleClose);
+            tabTitleClose.addEventListener('click', this._removeItem.bind(this, item));
             tabTitle.addEventListener('click', this._setActive.bind(this, item));
             this._tabsHeader.appendChild(tabTitle);
 
@@ -52,11 +59,35 @@ export default class TabsView {
         });
     }
 
+    _removeElementByIndex (selector, index) {
+        let elements = Array.from(this.view.querySelectorAll(selector));
+        let elementToRemove = elements[index];
+        if (elementToRemove) {
+            elementToRemove.parentElement.removeChild(elementToRemove);
+        }
+    }
+
+    _removeItem (item, event) {
+        event.stopPropagation();
+        let index = this._all.indexOf(item);
+        if (index === -1) {
+            return false;
+        }
+        this._all.splice(index, 1);
+        this._removeElementByIndex('.tabs-header-item', index);
+        this._removeElementByIndex('.tabs-content-item', index);
+
+        if (this._activeIndex === index && this._all.length) {
+            this._setActive(this._all[0]);
+        }
+    }
+
     _setActive (item) {
         let activeIndex = this._all.indexOf(item);
         if (activeIndex === -1) {
             return false;
         }
+        this._activeIndex = activeIndex;
         this._updateSelectedIndex('.tabs-header-item', activeIndex);
         this._updateSelectedIndex('.tabs-content-item', activeIndex);
     }

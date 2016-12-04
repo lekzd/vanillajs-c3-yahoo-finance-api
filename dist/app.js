@@ -175,6 +175,9 @@ var ChartView = function () {
                 high = [],
                 low = [],
                 open = [];
+            if (data.query.count === 0) {
+                return false;
+            }
             var results = data.query.results.quote;
 
             results.forEach(function (item) {
@@ -293,6 +296,7 @@ var TabsView = function () {
         this.view = view;
         this._all = [];
         this._rendered = new WeakSet();
+        this._activeIndex = 0;
 
         this._tabsHeader = this._element({ className: 'tabs-header' });
         this.view.appendChild(this._tabsHeader);
@@ -321,6 +325,12 @@ var TabsView = function () {
                     className: 'tabs-header-item',
                     innerText: item.title
                 });
+                var tabTitleClose = _this._element({
+                    className: 'tabs-header-item-close',
+                    innerText: 'x'
+                });
+                tabTitle.appendChild(tabTitleClose);
+                tabTitleClose.addEventListener('click', _this._removeItem.bind(_this, item));
                 tabTitle.addEventListener('click', _this._setActive.bind(_this, item));
                 _this._tabsHeader.appendChild(tabTitle);
 
@@ -346,12 +356,38 @@ var TabsView = function () {
             });
         }
     }, {
+        key: '_removeElementByIndex',
+        value: function _removeElementByIndex(selector, index) {
+            var elements = Array.from(this.view.querySelectorAll(selector));
+            var elementToRemove = elements[index];
+            if (elementToRemove) {
+                elementToRemove.parentElement.removeChild(elementToRemove);
+            }
+        }
+    }, {
+        key: '_removeItem',
+        value: function _removeItem(item, event) {
+            event.stopPropagation();
+            var index = this._all.indexOf(item);
+            if (index === -1) {
+                return false;
+            }
+            this._all.splice(index, 1);
+            this._removeElementByIndex('.tabs-header-item', index);
+            this._removeElementByIndex('.tabs-content-item', index);
+
+            if (this._activeIndex === index && this._all.length) {
+                this._setActive(this._all[0]);
+            }
+        }
+    }, {
         key: '_setActive',
         value: function _setActive(item) {
             var activeIndex = this._all.indexOf(item);
             if (activeIndex === -1) {
                 return false;
             }
+            this._activeIndex = activeIndex;
             this._updateSelectedIndex('.tabs-header-item', activeIndex);
             this._updateSelectedIndex('.tabs-content-item', activeIndex);
         }

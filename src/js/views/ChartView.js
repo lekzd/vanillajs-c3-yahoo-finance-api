@@ -18,6 +18,9 @@ export default class ChartView {
             high = [],
             low = [],
             open = [];
+        if (data.query.count === 0) {
+            return false;
+        }
         let results = data.query.results.quote;
 
         results.forEach((item) => {
