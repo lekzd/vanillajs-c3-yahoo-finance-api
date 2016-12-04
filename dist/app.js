@@ -197,6 +197,9 @@ var ChartView = function () {
 
             c3.generate({
                 bindto: '#' + this.uid,
+                size: {
+                    height: 600
+                },
                 data: {
                     x: 'x',
                     columns: [['x'].concat(date), ['close'].concat(close), ['high'].concat(high), ['low'].concat(low), ['open'].concat(open)]

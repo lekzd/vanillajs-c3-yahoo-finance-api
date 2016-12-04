@@ -37,8 +37,12 @@ export default class ChartView {
             open.push(parseFloat(item.Open));
         });
 
+
         c3.generate({
             bindto: `#${this.uid}`,
+            size: {
+                height: 600
+            },
             data: {
                 x: 'x',
                 columns: [
