@@ -168,6 +168,12 @@ var ChartView = function () {
             return element;
         }
     }, {
+        key: '_displayNoDataLabel',
+        value: function _displayNoDataLabel() {
+            var label = this._element({ innerText: 'No data to display, try to chose different period' });
+            this.view.appendChild(label);
+        }
+    }, {
         key: '_generateChart',
         value: function _generateChart(data) {
             var date = [],
@@ -176,6 +182,7 @@ var ChartView = function () {
                 low = [],
                 open = [];
             if (data.query.count === 0) {
+                this._displayNoDataLabel();
                 return false;
             }
             var results = data.query.results.quote;

@@ -12,6 +12,11 @@ export default class ChartView {
         return element
     }
 
+    _displayNoDataLabel () {
+        let label = this._element({innerText: 'No data to display, try to chose different period'});
+        this.view.appendChild(label);
+    }
+
     _generateChart (data) {
         let date = [],
             close = [],
@@ -19,6 +24,7 @@ export default class ChartView {
             low = [],
             open = [];
         if (data.query.count === 0) {
+            this._displayNoDataLabel();
             return false;
         }
         let results = data.query.results.quote;
