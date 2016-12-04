@@ -17,19 +17,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var query = new _YQLQueryService2.default();
 
-var startTime = new Date('2016-11-03').getTime();
-var endTime = new Date('2016-12-03').getTime();
-
-query.get('YHOO', startTime, endTime);
-
 var form = new _FormView2.default(document.querySelector('#form'));
 var tabs = new _TabsView2.default(document.querySelector('#tabs'));
 
-form.onSubmit = function (data) {
-  console.log(data);
+form.onSubmit = function (_ref) {
+    var code = _ref.code,
+        from = _ref.from,
+        to = _ref.to;
+
+    var startTime = new Date(from).getTime();
+    var endTime = new Date(to).getTime();
+
+    query.get(code, startTime, endTime).then(function (data) {
+        tabs.add(code, data);
+    });
 };
 
-},{"./services/YQLQueryService.js":3,"./views/FormView.js":4,"./views/TabsView.js":5}],2:[function(require,module,exports){
+},{"./services/YQLQueryService.js":3,"./views/FormView.js":5,"./views/TabsView.js":6}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -125,10 +129,7 @@ var YQLQueryService = function () {
                 format: 'json'
             });
             var url = this.baseUrl + '?' + params;
-
-            this._request(url).then(function (data) {
-                console.log(data);
-            });
+            return this._request(url);
         }
     }]);
 
@@ -138,6 +139,67 @@ var YQLQueryService = function () {
 exports.default = YQLQueryService;
 
 },{"./HttpService.js":2}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ChartView = function () {
+    function ChartView(view, data) {
+        _classCallCheck(this, ChartView);
+
+        this.view = view;
+        this.uid = 'chart-' + Math.random().toString(16).substring(2);
+
+        this._render(data);
+    }
+
+    _createClass(ChartView, [{
+        key: '_element',
+        value: function _element(attributes) {
+            var element = document.createElement('div');
+            Object.assign(element, attributes);
+            return element;
+        }
+    }, {
+        key: '_generateChart',
+        value: function _generateChart(data) {
+            c3.generate({
+                bindto: '#' + this.uid,
+                data: {
+                    x: 'x',
+                    columns: [['x', '2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04', '2013-01-05', '2013-01-06'], ['data1', 30, 200, 100, 400, 150, 250], ['data2', 130, 340, 200, 500, 250, 350]]
+                },
+                axis: {
+                    x: {
+                        type: 'timeseries',
+                        tick: {
+                            format: '%Y-%m-%d'
+                        }
+                    }
+                }
+            });
+        }
+    }, {
+        key: '_render',
+        value: function _render(data) {
+            this.view.appendChild(this._element({ id: this.uid }));
+
+            setTimeout(this._generateChart.bind(this, data));
+        }
+    }]);
+
+    return ChartView;
+}();
+
+exports.default = ChartView;
+
+},{}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -182,7 +244,7 @@ var FormView = function () {
 
 exports.default = FormView;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -190,6 +252,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _ChartView = require('./ChartView.js');
+
+var _ChartView2 = _interopRequireDefault(_ChartView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -231,9 +299,9 @@ var TabsView = function () {
                 _this._tabsHeader.appendChild(tabTitle);
 
                 var tabContent = _this._element({
-                    className: 'tabs-content-item',
-                    innerHTML: item.content
+                    className: 'tabs-content-item'
                 });
+                tabContent.appendChild(item.chart);
                 _this._tabsHeader.appendChild(tabContent);
 
                 _this._rendered.add(item);
@@ -241,8 +309,12 @@ var TabsView = function () {
         }
     }, {
         key: 'add',
-        value: function add(title, content) {
-            this._all.push({ title: title, content: content });
+        value: function add(title, data) {
+
+            var chart = document.createElement('div');
+            new _ChartView2.default(chart, data);
+
+            this._all.push({ title: title, chart: chart });
             this._render();
         }
     }]);
@@ -252,4 +324,4 @@ var TabsView = function () {
 
 exports.default = TabsView;
 
-},{}]},{},[1]);
+},{"./ChartView.js":4}]},{},[1]);

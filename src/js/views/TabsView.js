@@ -1,3 +1,5 @@
+import ChartView from './ChartView.js';
+
 export default class TabsView {
     constructor (view) {
         this.view = view;
@@ -29,17 +31,21 @@ export default class TabsView {
             this._tabsHeader.appendChild(tabTitle);
 
             let tabContent = this._element({
-                className: 'tabs-content-item',
-                innerHTML: item.content
+                className: 'tabs-content-item'
             });
+            tabContent.appendChild(item.chart);
             this._tabsHeader.appendChild(tabContent);
 
             this._rendered.add(item);
         })
     }
 
-    add (title, content) {
-        this._all.push({title, content});
+    add (title, data) {
+
+        let chart = document.createElement('div');
+        new ChartView(chart, data);
+
+        this._all.push({title, chart});
         this._render();
     }
 }

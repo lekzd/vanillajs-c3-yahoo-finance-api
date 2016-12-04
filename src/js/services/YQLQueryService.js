@@ -35,11 +35,7 @@ export default class YQLQueryService {
             format: 'json'
         });
         let url = `${this.baseUrl}?${params}`;
-
-        this._request(url).then((data) => {
-            console.log(data);
-        });
-
+        return this._request(url);
     }
 
 }
